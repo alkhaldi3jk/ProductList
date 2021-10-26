@@ -1,3 +1,4 @@
+const connectDb = require("./database");
 const express = require("express");
 const productsRoutes = require("./apis/products/routes");
 
@@ -9,6 +10,8 @@ app.use("/api/products", productsRoutes);
 
 const port = 8000;
 
+
+connectDb();
 app.listen(port, () => {
   console.log(`The application is running on localhost:${port}`);
 });
