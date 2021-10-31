@@ -21,36 +21,67 @@ exports.productListCreate = async (req, res) => {
   }
 };
 
-exports.productListDelete = async (req, res) => {
+exports.productListDelete = async (req, res, next) => {
+  // before route.param midleware
   // const productId=req.params.productId;
-  const { productId } = req.params;
+  // const { productId } = req.params;
+  // try {
+  //   const product = await Product.findById(productId);
+  //   await products.filter((productId) => product.id !== +productId);
+  //   if (product) {
+  //     await product.remove();
+  //     return res.status(204).end();
+  //   } else {
+  //     return res.status(404).json({ message: "not found" });
+  //   }
+  // } catch (error) {
+  //   return res.status(500).json({ message: error.message });
+  // }
+
   try {
-    const product = await Product.findById(productId);
-    await products.filter((productId) => product.id !== +productId);
-    if (product) {
-      await product.remove();
-      return res.status(204).end();
-    } else {
-      return res.status(404).json({ message: "not found" });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+    await req.product.remove();
+    res.status(204).end();
+  } catch (err) {
+    next(error);
   }
 };
 
-exports.productListUpdate = async (req, res) => {
+exports.productListUpdate = async (req, res, next) => {
   // const productId=req.params.productId;
-  const { productId } = req.params;
-  try {
-    const product = await Product.findByIdAndUpdate(productId,{_id: productId}, req.body,{new:true});
+  // const { productId } = req.params;
+  // try {
+  //   const product = await Product.findByIdAndUpdate(
+  //     { _id: productId },
+  //     req.body,
+  //     { new: true, runValidators: true }
+  //   );
 
-    if (product) {
-    //   const updatedProduct = await product.updateOne(req.body);
-      return res.status(204).jason(updatedProduct);
-    } else {
-      return res.status(404).json({ message: "not found" });
-    }
+  //   if (product) {
+  //     //   const updatedProduct = await product.updateOne(req.body);
+  //     return res.status(200).json(product); //
+  //   } else {
+  //     return res.status(404).json({ message: "not found" });
+  //   }
+  // } catch (error) {
+  //   return res.status(500).json({ message: error.message });
+  // }
+  //Using route.params
+  try {
+    const product = await Product.findByIdAndUpdate(
+      { _id: req.product.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    res.status(204).end();
+  } catch (err) {
+    next(error);
+  }
+};
+exports.fetchProduct = async (productId, next) => {
+  try {
+    const product = await product.findById(productId);
+    return product;
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
